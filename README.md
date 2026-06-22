@@ -20,12 +20,36 @@ python3 "$HOME/.codex/skills/.system/skill-installer/scripts/install-skill-from-
 
 Then restart Codex so the skill list refreshes.
 
+## What One Install Includes
+
+The skill install includes the importer, note template, platform extraction logic, and local transcription workflow.
+
+It does not install native transcription dependencies. Article import and metadata capture work without them, but video transcription requires:
+
+- `ffmpeg`
+- OpenAI Whisper CLI, available as the `whisper` command
+
+Check the current machine:
+
+```bash
+python3 "$HOME/.codex/skills/obsidian-social/scripts/download_and_transcribe.py" --check-deps
+```
+
+Common macOS setup:
+
+```bash
+brew install ffmpeg
+python3 -m pip install -U openai-whisper
+```
+
+The `whisper` command here means OpenAI's local Whisper CLI, not the Wispr dictation app.
+
 ## Defaults
 
 - Vault: `~/Documents/Obsidian Vault`
 - Output folder: `02-Sources`
 - Media cache: `~/.cache/obsidian-social`
-- ASR: local Whisper only
+- ASR: local Whisper only, when `ffmpeg` and `whisper` are installed
 
 Useful overrides:
 

@@ -40,6 +40,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--initial-prompt", default=DEFAULT_INITIAL_PROMPT, help="Whisper initial prompt for domain terms.")
     parser.add_argument("--force", action="store_true", help="Re-download and re-transcribe even if cached files exist.")
     parser.add_argument("--no-update-note", action="store_true", help="Print transcript path without editing the note.")
+    parser.add_argument("--check-deps", action="store_true", help="Check whether ffmpeg and whisper are available, then exit.")
     parser.add_argument("--print-model-decision", action="store_true", help="Print the auto-selected model and exit without transcribing.")
     parser.add_argument("--delete-media-after-transcribe", action="store_true", help="Delete cached video/audio after successful transcription. Transcript cache remains.")
     return parser.parse_args(argv)
@@ -47,6 +48,26 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 
 def main(argv: list[str]) -> int:
     args = parse_args(argv)
+    if args.check_deps:
+        deps = check_dependencies()
+        missing = [name for name, path in deps.items() if not path]
+        print(
+            json.dumps(
+                {
+                    "status": "ok" if not missing else "missing_dependencies",
+                    "available": deps,
+                    "missing": missing,
+                    "notes": [
+                        "Article and metadata import work without ffmpeg or whisper.",
+                        "Video transcription needs both ffmpeg and the OpenAI Whisper CLI.",
+                    ],
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return 0 if not missing else 1
+
     resolved_model, model_reason, resources = resolve_model(args.model)
     if args.print_model_decision:
         print(
@@ -153,6 +174,10 @@ def extract_media_source(markdown: str) -> str:
 def require_command(command: str) -> None:
     if not shutil.which(command):
         raise RuntimeError(f"Required command not found: {command}")
+
+
+def check_dependencies() -> dict[str, str]:
+    return {command: shutil.which(command) or "" for command in sorted(ALLOWED_COMMANDS)}
 
 
 def validate_video_url(url: str) -> None:

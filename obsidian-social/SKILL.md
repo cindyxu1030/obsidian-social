@@ -69,6 +69,13 @@ Use this skill when the user asks to:
 
 4. For video notes where a `video_url` is present, download and transcribe into the same note:
 
+   Video transcription needs `ffmpeg` and OpenAI's local Whisper CLI (`whisper`) installed on the user's machine. Article import and metadata capture still work without these dependencies. To check:
+
+   ```bash
+   SKILL_DIR="${CODEX_HOME:-$HOME/.codex}/skills/obsidian-social"
+   python3 "$SKILL_DIR/scripts/download_and_transcribe.py" --check-deps
+   ```
+
    ```bash
    SKILL_DIR="${CODEX_HOME:-$HOME/.codex}/skills/obsidian-social"
    python3 "$SKILL_DIR/scripts/download_and_transcribe.py" --note /path/to/source-note.md

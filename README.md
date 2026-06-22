@@ -2,6 +2,22 @@
 
 Codex skill for saving Xiaohongshu, Douyin, and WeChat public links into Obsidian source notes.
 
+[中文说明](README.zh-CN.md)
+
+## Security Scan
+
+Latest public repo scan:
+
+- Tool: SkillSpector `2.2.3`
+- Target: `https://github.com/cindyxu1030/obsidian-social`
+- Mode: static scan, `--no-llm`
+- Result: `SAFE`
+- Severity: `LOW`
+- Score: `19/100`
+- Date: `2026-06-22`
+
+Remaining notes: SkillSpector flags the transcription script's `subprocess.run` call because it invokes external commands. The script uses `shell=False` and a command allowlist limited to `ffmpeg` and `whisper`. SkillSpector also flags standard MIT License wording as a low-risk scope-creep false positive.
+
 ## Install
 
 Ask Codex to install:
